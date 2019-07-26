@@ -30,7 +30,7 @@ $("#submitBtn").on("click", function(event){
 
 
 $("#gifRow").on("click", ".btn", function() {
-  $("displayGifs").empty();
+  $("#displayGifs").empty();
   // Grabbing and storing the data-animal property value from the button
   var artist = $(this).attr("data-artist");
 console.log(artist);
