@@ -1,5 +1,5 @@
 
-gifArr = ["turtle","dog", "cat", "fish", "horse", "marmot", "bird", "lizzard"]
+gifArr = ["Notorious BIG", "Tupac", "Eminem", "Jay-Z", "Public Enemy", "Outkast", "Beastie Boys", "Snoop Dog"]
 var btn;
 
 
@@ -11,14 +11,13 @@ for (var i=0; i<gifArr.length; i++){
   
   var btn = $("<button>");
   btn.addClass("btn btn-info");
+  btn.attr("data-artist",gifArr[i])
 
-  btn.attr("data-name",gifArr[i]);
   btn.text(gifArr[i]);
   $("#gifRow").append(btn)
 
 }
 }
-
 
 $("#submitBtn").on("click", function(event){
   event.preventDefault();
@@ -29,52 +28,55 @@ $("#submitBtn").on("click", function(event){
   renderBtns()
 })
 
-var animal = $(".btn-info").attr("data-name");
-console.log(animal);
-$(this).on("click", function() {
+
+$("#gifRow").on("click", ".btn", function() {
+  $("displayGifs").empty();
   // Grabbing and storing the data-animal property value from the button
-  console.log(queryURL);
+  var artist = $(this).attr("data-artist");
+console.log(artist);
+  
+var queryURL = "https://api.giphy.com/v1/gifs/search?api_key=cEwbXDdhkHifC3t4ZkD4tR3l4KaVLQsH&q=" + artist + "&limit=10&offset=0&rating=G&lang=en";
+// console.log(queryURL);
 
-  // Constructing a queryURL using the animal name
-  var queryURL = "https://api.gify.com/v1/gifs/search?q=" +
-  animal + "&api_key=cEwbXDdhkHifC3t4ZkD4tR3l4KaVLQsH&limit=10";
-  console.log(response);
+$.ajax({
+  url: queryURL,
+  method: "GET"
+}) .then(function(response) {
 
-  // Performing an AJAX request with the queryURL
-  $.ajax({
-    url: queryURL,
-    method: "GET"
-  })
-    // After data comes back from the request
-    .then(function(response) {
-      console.log(queryURL);
+// console.log(queryURL);
+console.log(response);
+result =  response.data
+console.log(result);
+for (var i=0; i<result.length; i++){
+//  var gifDiv = $("<div>")
+//   var p = $("<p>");
+  var gif = $("<img>")
+  gif.attr("src", result[i].images.fixed_width_still.url)
+  gif.attr("data-state", "still") 
+  gif.attr("data-still", result[i].images.fixed_width_still.url)
+  gif.attr("data-animate", result[i].images.fixed_width.url )
+  gif.addClass("gif")
+ // gifDiv.append(p);
+  // gifDiv.append(gif)
+  $("#displayGifs").prepend(gif)
+}
+// might need to be on its own below here...//
+})
 
-      console.log(response);
-      // storing the data from the AJAX request in the results variable
-      var results = response.data;
 
-      // Looping through each result item
-      for (var i = 0; i < results.length; i++) {
-
-        // Creating and storing a div tag
-        var animalDiv = $("<div>");
-
-        // Creating a paragraph tag with the result item's rating
-        var p = $("<p>").text("Rating: " + results[i].rating);
-
-        // Creating and storing an image tag
-        var animalImage = $("<img>");
-        // Setting the src attribute of the image to a property pulled off the result item
-        animalImage.attr("src", results[i].images.fixed_height.url);
-
-        // Appending the paragraph and image tag to the animalDiv
-        animalDiv.append(p);
-        animalDiv.append(animalImage);
-
-        // Prependng the animalDiv to the HTML page in the "#gifs-appear-here" div
-        $("#gifs-appear-here").prepend(animalDiv);
-      }
-    });
+$("#displayGifs").on("click", ".gif", function() {
+var state = $(this).attr("data-state");
+if (state=== "still") {
+  $(this).attr("src", $(this).attr("data-animate"));
+  $(this).attr("data-state", "animate");
+} else {
+  $(this).attr("src", $(this).attr("data-still"));
+  $(this).attr("data-state", "still");
+}
 });
+
+});
+
+
 renderBtns();
 
