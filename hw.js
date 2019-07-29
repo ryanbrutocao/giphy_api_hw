@@ -27,7 +27,7 @@ $("#submitBtn").on("click", function(event){
   renderBtns()
 })
 
-
+var container;
 // function to allow user to click a button. makes an ajax call to the giphy API and loads 10 gifs onto the screen.
 $("#gifRow").on("click", ".btn", function() {
   $("#displayGifs").empty();
@@ -47,8 +47,11 @@ console.log(response);
 result =  response.data
 rating;
 console.log(result);
+
 for (var i=0; i<result.length; i++){
 var gif = $("<img>");
+var id = result[i].id
+console.log(id);
 gif.attr("src", result[i].images.fixed_width_still.url)
 gif.attr("data-fav", "false")
 gif.attr("data-state", "still");
@@ -58,6 +61,7 @@ gif.addClass("gif")
 var rating = $("<span class='rating'>").text('Rated: ' + result[i].rating.toUpperCase());
 var favorites = $("<button class='favorites' type='submit'>").text('Favorites + / -');
 favorites.attr("data-fav", "false")
+favorites.attr("data-id", id)
 var container = $("<container>")
 container.addClass("gifContainer")
 container.append(gif, rating, favorites )
@@ -65,18 +69,21 @@ container.append(gif, rating, favorites )
   
 // allows the user to change the state of a gif which then shows onto a 'favorites' section of the screen while simultaneously removing it from the main gif area
 $("#displayGifs").on("click", ".favorites", function() {
+ 
   var state = $(this).attr("data-fav");
-  if (state=== "false"  ) {
+  var dataID = $(this).attr(id)
+  if (state=== "false") {
   
-    $(this).attr("data-fav", "remove");
-    $("#favoriteGifs").append(container)
+    $("#favoriteGifs").append(container, "data-fav", dataID)
+    $(this).attr("data-fav", "true");
   
   }
 });
   // allows user to remove gif from favorites section and add it back to the main gif area
-  $("#favoriteGifs").on("click", ".favorites", function() {
+  $("#submitNew").on("click", ".favorites", function() {
+    
     var state = $(this).attr("data-fav");
-    if (state=== "remove") {
+    if (state=== "true") {
       $(this).attr("data-fav", "false");
       $("#displayGifs").append(container)
       }
