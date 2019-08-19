@@ -8,3 +8,4 @@ when the user clicks on a gif, the gif will start playing. When the user clicks 
 
 if you want to add additional gifs,  click the 'Add More Gifs' button and ten new gifs will be appended to the list for each time the button is clicked. 
 
+The most difficult part of this assignment was adding a'favorites' section. I was able to get this working by adding a data attirbute that is toggled on click. When it is toggled that gif is moved to a favorites section. it is also able to be removed when toggled off.
